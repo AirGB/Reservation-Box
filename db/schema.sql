@@ -25,7 +25,7 @@ CREATE TABLE reviews (
 
 CREATE TABLE listings (
   id INT NOT NULL AUTO_INCREMENT,
-  property_name VARCHAR (100),
+  property_name VARCHAR (100) NOT NULL,
   host_id INT,
   review_id INT,
   views_id INT DEFAULT 0,
