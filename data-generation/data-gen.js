@@ -95,7 +95,7 @@ const generateReviews = () => {
   console.log('generateReviews');
   let out = fs.createWriteStream('./reviewsData.csv', {flag: 'a'});
   for(var i = 1; i < 10000001; i++) {
-    out.write(`${i},${randomNumberGen(1,118)},${randomNumberGen(1,5)}`)
+    out.write(`${i},${randomNumberGen(1,118)},${randomNumberGen(1,5)}\n`)
   }
   out.end();
 }
@@ -103,35 +103,16 @@ const generateReviews = () => {
 const generateListings = () => {
   const rl = readline('./propertiesData.csv', {
     retainBuffer: true
-  // input: fs.createReadStream('./propertiesData.csv')
   });
-// rl = readline('./file-in-win1251.txt', {
-//     retainBuffer: true //tell readline to retain buffer 
-//   });
-
-
   console.log('generateListings');
   let out = fs.createWriteStream('./listingsData.csv', {flag: 'a'});
   rl.on('line', (line) => {
     const lineStr = line.toString();
     const lineSplit = lineStr.split(',');
-    out.write(`${lineSplit[0]},${lineSplit[1]},${randomNumberGen(1,10000000)},${randomNumberGen(1,10000000)},${randomNumberGen(1,250)},${randomNumberGen(1,5)},${randomNumberGen(2,10)},${randomNumberGen(5,25)},${randomNumberGen(1,5)},${10,200}`) 
-  })
+    out.write(`${lineSplit[0]},${lineSplit[1]},${randomNumberGen(1,10000000)},${randomNumberGen(1,10000000)},${randomNumberGen(1,250)},${randomNumberGen(1,5)},${randomNumberGen(2,10)},${randomNumberGen(5,25)},${randomNumberGen(1,5)},${randomNumberGen(10,200)}\n`) 
+  });
   
 }
-
-// const generateListings = () => {
-//   const rl = readline.createInterface({
-//   input: fs.createReadStream('sampleData.csv')
-//   });
-
-//   let out = fs.createWriteStream('./csv_files/listingsSample.csv', {flag: 'a'});
-
-//   rl.on('line', (line) => {
-//     const lineSplit = line.split(',');
-//     out.write(`${lineSplit[0]},${lineSplit[1]},${randomNumber(10000000, 1)},${randomNumber(10000000, 1)},${randomNumber(60, 10)},${randomNumber(10, 3)},${randomNumber(15, 5)},${randomNumber(20, 10)},${randomNumber(10, 7)},${randomNumber(250, 60)}\r\n`, 'utf-8');
-//   });
-// }
 
 const generateBookedDates = () => {
   console.log('generateBookedDates');
@@ -177,7 +158,7 @@ const generateReservations = () => {
 // generateUsers();
 // generateHosts();
 // generateReviews();
-generateListings();
+// generateListings();
 // generateBookedDates();
 // generateReservations();
 

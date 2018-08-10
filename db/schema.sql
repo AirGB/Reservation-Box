@@ -25,9 +25,10 @@ CREATE TABLE reviews (
 
 CREATE TABLE listings (
   id INT NOT NULL AUTO_INCREMENT,
+  property_name VARCHAR (100),
   host_id INT,
   review_id INT,
-  weekly_views INT DEFAULT 0,
+  views_id INT DEFAULT 0,
   min_stay INT DEFAULT 1,
   max_guests INT,
   fees INT DEFAULT 0,
@@ -58,5 +59,12 @@ CREATE TABLE reservations (
   PRIMARY KEY (id),
   FOREIGN KEY (guest_id) REFERENCES users(id)
 );
+
+-- CREATE TABLE views (
+--   id INT NOT NULL AUTO_INCREMENT,
+--   user_id INT NOT NULL,
+--   listing_id INT NOT NULL,
+--   created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+-- );
   
   
