@@ -5,6 +5,7 @@ node_modules
 *.config.js
 spec
 .circleci
+*.csv
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
