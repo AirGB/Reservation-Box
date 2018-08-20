@@ -30,6 +30,9 @@ const generateDates = () => {
   return arr;
 }
 
+// node --max-old-space-size=8192 dataGen.js
+
+
 const generateDate = () => {
   var year = randomNumberGen(2018, 2020);
   var month = randomNumberGen(1,12);
@@ -44,27 +47,16 @@ const generateProperties = () => {
   var adjectives = ["cosy", "rustic", "vintage", "traditional", "contemporary", "breath-taking", "charming", "elegant", "luxurious", "picturesque", "minimalistic", "modern", "brand-new", "classic", "cute", "magnificent", "huge", "downtown", "single family", "residential"]
   var nouns =  ["historic landmark", "home", "home warranty", "homeowners insurance", "homestead", "house", "house boat", "property", "ranch", 'house']
   var emotions =  ["a blessing", "a daily joy", "a dream boat", "a dream come true", "a goddess", "a heart throb", "a loving friend", "a real-life fantasy", "accepting", "adorable", "adventurous", "affectionate", "agreeable", "alluring", "always there for me", "amazing", "an angel", "angelic", "artistic", "attentive", "attractive", "awe-inspiring", "beautiful", "beloved", "bewitching", "blessed", "brave", "breathtaking", "bright", "brilliant", "candid", "captivating", "careful", "caring", "charming", "cheeky", "cheerful", "classy", "clever", "committed", "compassionate", "complex", "confident", "considerate", "courageous", "crafty", "creative", "cuddly", "cultured", "curious", "curvy", "cute", "daring", "darling", "dazzling", "dedicated", "delicate", "delightful", "dependable", "disciplined", "down-to-earth", "dreamy", "dynamic", "easy-going", "easy-to-love", "lovable", "loved", "lovely", "loving", "loyal", "luminous", "luscious", "magical", "magnetic", "mature", "mesmerizing", "mischievous", "motivated", "musical", "my baby doll", "my beloved", "my best friend", "my confidante", "my dearest", "my dream girl", "my dream guy", "my everything", "my fantasy", "my favorite person", "my happiness", "my honey", "my joy in life", "my life partner", "my longtime crush", "my main man", "my main squeeze", "my other half", "my partner in crime", "my playmate", "my pride and joy", "my sanity", "my soul mate", "my strength", "my sunshine", "mysterious", "narcotic", "naughty", "no drama", "nurturing", "one-of-a-kind", "open-minded", "opinionated", "passionate", "patient", "perceptive", "perfect", "personable", "petite", "playful", "poetic", "positive", "precious", "pretty", "principled", "provocative"];
-  // let out = fs.createWriteStream('./')
+  
   let out = fs.createWriteStream('./propertiesData.csv', {flag: 'a'});
-  // fs.writeFile('properties.csv',"listing name \n", (err)=> {
-  //   if (err) {
-  //     console.log(err);
-  //   }
-  // });
   let strIn = 'in'
   let counter = 1;
   for (var i = 0; i < emotions.length; i++) {
     for (var j = 0; j < adjectives.length; j++) {
       for (var k = 0; k < nouns.length; k++) {
         for (var l = 0; l < cities.length; l++) {
-          // const sequence = emotions[i] + " " + adjectives[j] + " " + nouns[k] + " in " + cities[l] + "\n";
           out.write(`${counter},${emotions[i]} ${adjectives[j]} ${nouns[k]} ${strIn} ${cities[l]}\n`, 'utf-8');
           counter ++;
-          // fs.appendFileSync('listingNames.csv', sequence, (err)=> {
-          //   if (err) {
-          //     console.log(err);
-          //   }
-          // });
         }
       }
     }
@@ -152,8 +144,6 @@ const generateReservations = () => {
 }
 
 
-
-
 // generateProperties();
 // generateUsers();
 // generateHosts();
@@ -162,5 +152,98 @@ const generateReservations = () => {
 // generateBookedDates();
 // generateReservations();
 
+// make 10M mongo files x 3. Each one will have the same listing info, but 3 sets of unique resrvations.
+
+const generateJSON = () => {
+  let out = fs.createWriteStream('./jsonData.json', {flag: 'a'});
+  let counter = 1
+  for(var i = 1; i < 100; i++) {
+    let dates = generateDates();
+    out.write(`{"id":${lineSplit[0]},"property_name":"${lineSplit[1]}","host_id":${randomNumberGen(1,8)},"host_username":"${faker.internet.userName()}","total_reviews":${randomNumberGen(1,118)},"avg_review_rating":${randomNumberGen(1,5)},"weekly_views":${randomNumberGen(1,50)},"min_stay":${randomNumberGen(1,6)},"max_guests":${randomNumberGen(2,9)},"fees":${randomNumberGen(20,40)},"tax_rate":${randomNumberGen(1,7)},"rate":${randomNumberGen(20,70)},"reservation":{"reservation_id":${counter},"guest_id":${1,10000000},"guest_username":"${faker.internet.userName()}","check_in":${dates[0]},"check_out":${dates[1]},"total_adults":${randomNumberGen(1,5)},"total_pups":${randomNumberGen(1,7)},"total_charge":${40 + randomNumberGen(20,100)}}},`, "utf-8");
+    counter ++;
+  }
+  out.end()
+}
+
+// generateJSON()
+const checkStart = (counter) => {
+  if(counter === 1) {
+    return '['
+  } else {
+    return '';
+  }
+}
+const checkEnd = (counter) => {
+  if (counter === 10000000) {
+    return ']'
+  } else {
+    return ','
+  }
+}
+
+const generateMongo = () => {
+  const rl = readline('./propertiesData.csv', {
+    retainBuffer: true
+  });
+  console.log('generateMongo');
+  let counter = 1
+  let out = fs.createWriteStream('./mongoData.json');
+  rl.on('line', (line) => {
+    const lineStr = line.toString();
+    const lineSplit = lineStr.split(',');
+    const dates = generateDates();
+    out.write(`${checkStart(counter)}{"id":${lineSplit[0]},"property_name":"${lineSplit[1]}","host_id":${randomNumberGen(1,10000000)},"host_username":"${faker.internet.userName()}","total_reviews":${randomNumberGen(1,118)},"avg_review_rating":${randomNumberGen(1,5)},"weekly_views":${randomNumberGen(1,50)},"min_stay":${randomNumberGen(1,6)},"max_guests":${randomNumberGen(2,9)},"fees":${randomNumberGen(20,40)},"tax_rate":${randomNumberGen(1,7)},"rate":${randomNumberGen(20,70)},"reservation":{"reservation_id":${counter},"guest_id":${1,10000000},"guest_username":"${faker.internet.userName()}","check_in":"${dates[0]}","check_out":"${dates[1]}","total_adults":${randomNumberGen(1,5)},"total_pups":${randomNumberGen(1,7)},"total_charge":${40 + randomNumberGen(20,100)}}}${checkEnd(counter)}\n`, "utf-8");
+    counter ++;
+  });
+  rl.on('line', (line) => {
+    const lineStr = line.toString();
+    const lineSplit = lineStr.split(',');
+    const dates = generateDates();
+    out.write(`{"id":${lineSplit[0]},"property_name":"${lineSplit[1]}","host_id":${randomNumberGen(1,8)},"host_username":"${faker.internet.userName()}","total_reviews":${randomNumberGen(1,118)},"avg_review_rating":${randomNumberGen(1,5)},"weekly_views":${randomNumberGen(1,50)},"min_stay":${randomNumberGen(1,6)},"max_guests":${randomNumberGen(2,9)},"fees":${randomNumberGen(20,40)},"tax_rate":${randomNumberGen(1,7)},"rate":${randomNumberGen(20,70)},"reservation":{"reservation_id":${counter},"guest_id":${1,10000000},"guest_username":"${faker.internet.userName()}","check_in":"${dates[0]}","check_out":"${dates[1]}","total_adults":${randomNumberGen(1,5)},"total_pups":${randomNumberGen(1,7)},"total_charge":${40 + randomNumberGen(20,100)}}}${checkEnd(counter)}\n`, "utf-8");
+    counter ++;
+  });
+  rl.on('line', (line) => {
+    const lineStr = line.toString();
+    const lineSplit = lineStr.split(',');
+    const dates = generateDates();
+    out.write(`{"id":${lineSplit[0]},"property_name":"${lineSplit[1]}","host_id":${randomNumberGen(1,8)},"host_username":"${faker.internet.userName()}","total_reviews":${randomNumberGen(1,118)},"avg_review_rating":${randomNumberGen(1,5)},"weekly_views":${randomNumberGen(1,50)},"min_stay":${randomNumberGen(1,6)},"max_guests":${randomNumberGen(2,9)},"fees":${randomNumberGen(20,40)},"tax_rate":${randomNumberGen(1,7)},"rate":${randomNumberGen(20,70)},"reservation":{"reservation_id":${counter},"guest_id":${1,10000000},"guest_username":"${faker.internet.userName()}","check_in":"${dates[0]}","check_out":"${dates[1]}","total_adults":${randomNumberGen(1,5)},"total_pups":${randomNumberGen(1,7)},"total_charge":${40 + randomNumberGen(20,100)}}}${checkEnd(counter)}\n`, "utf-8");
+    counter ++;
+  });
+  
+}
+
+const generateMongoReservations = () => {
+  let out = fs.createWriteStream('./mongoReservationsData.json');
+  for(var i = 1; i < 30000001; i++) {
+    const dates = generateDates();
+    out.write(`${checkStart(i)}{"_id":${i},"guest_id":${randomNumberGen(1,10000000)},"guest_username":"${faker.internet.userName()}","check_in":"${dates[0]}","check_out":"${dates[1]}","total_adults":${randomNumberGen(1,5)},"total_pups":${randomNumberGen(1,7)},"total_charge":${40 + randomNumberGen(20,100)}}${checkEnd(i)}\n`, "utf-8")
+  }
+  out.end();
+}
+
+const generateMongoListings = () => {
+  const rl = readline('./propertiesData.csv', {
+    retainBuffer: true
+  });
+  let counter = 1;
+  let out = fs.createWriteStream('./mongoListingsData.json');
+  rl.on('line', (line) => {
+    const lineStr = line.toString();
+    const lineSplit = lineStr.split(',');
+    out.write(`${checkStart(counter)}{"id":${lineSplit[0]},"property_name":"${lineSplit[1]}","host_id":${randomNumberGen(1,10000000)},"host_username":"${faker.internet.userName()}","total_reviews":${randomNumberGen(1,118)},"avg_review_rating":${randomNumberGen(1,5)},"weekly_views":${randomNumberGen(1,50)},"min_stay":${randomNumberGen(1,6)},"max_guests":${randomNumberGen(2,9)},"fees":${randomNumberGen(20,40)},"tax_rate":${randomNumberGen(1,7)},"rate":${randomNumberGen(20,70)},"reservation":[${counter}, ${counter + 10000000}, ${counter + 20000000}]}${checkEnd(counter)}\n`, "utf-8");
+    counter ++;
+  });
+}
+
+
+generateMongoListings()
+
+// generateMongoReservations();
+
+
+
+// generateMongo();
+
+// generateExample()
 
 
