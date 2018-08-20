@@ -7,7 +7,7 @@ spec
 .circleci
 *.csv
 *.json
-
+newrelic.js
 # Elastic Beanstalk 
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
