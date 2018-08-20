@@ -15,6 +15,10 @@ class ReservationDetails extends React.Component {
   }
 
   postNewReservation () {
+    let charge = 30 + (Math.round(Math.random() * 40));
+    let days = Math.round(Math.random() * 5) + 1;
+    let totalCharge = charge * days;
+
     let url ='/api/reservations/new' + this.props.listingId;
     let options = {
       listingId: this.props.listing.id,
@@ -23,6 +27,7 @@ class ReservationDetails extends React.Component {
       guestId: 1,
       adults: this.state.adults, 
       pups: this.state.pups,
+      charge: totalCharge,
 
     }
 

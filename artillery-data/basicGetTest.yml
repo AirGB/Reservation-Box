@@ -1,0 +1,74 @@
+config:
+  target: "http://localhost:3003"
+  phases:
+    - duration: 60
+      arrivalRate: 10
+  payload:
+    path: "listingIdsData.csv"
+    fields:
+      - "listingIds"
+      - "targetDate"
+      - "targetMonth"
+      - "reservationId"
+      - "newCharge"
+      - "deleteReservation"
+      - "listingIds"
+      - "checkIn"
+      - "checkOut"
+      - "guestId"
+      - "adults"
+      - "pups"
+      - "charge"
+scenarios:
+  - name: "Get listings by id"
+    weight: 30
+    flow:
+      - loop:
+        - get:
+            url: "/api/listings/{{ listingIds }}"
+        count: 30
+  - name: "Get dates by target date"
+    weight: 15
+    flow:
+      - loop:
+        - get:
+            url: "/api/dates/{{ listingIds }}?targetDate={{ targetDate }}"
+        count: 30
+  - name: "Get dates for current month"
+    weight: 15
+    flow:
+      - loop:
+        - get:
+            url: "/api/dates/{{ listingIds }}?month={{ targetMonth }}"
+        count: 30
+  - name: "Put new charge to reservation"
+    weight: 2
+    flow:
+      - loop:
+        - put:
+            url: "/api/reservations/{{ reservationId }}/change_total_charge/{{ newCharge }}"
+        count: 30
+  - name: "Delete a reservation"
+    weight: 1
+    flow:
+      - loop:
+        - delete:
+            url: "/api/reservation/{{ deleteReservation }}/remove"
+        count: 30
+  - name: "Post new reservation"
+    weight: 5
+    flow:
+      - loop:
+        - post:
+            url: "/api/reservations/new"
+            json:
+              listingId: {{ listingIds  }}
+              checkIn: {{ checkIn }}
+              checkOut: {{ checkOut }}
+              guestId: {{ guestId }}
+              adults: {{ adults }}
+              pups: {{ pups }}
+              charge: {{ charge }}
+        count: 5
+
+
