@@ -24,13 +24,13 @@ app.get('/api/listings/:listingId', (req, res) => {
       res.send(result)
     } else {
       db.getListingById(req.params, (err, result) => {
-        console.log(req.params, 'listing ID server')
+        // console.log(req.params, 'listing ID server')
         if (err) {
           res.status(500).send({ err: `Server oopsie ${err}` });
         } else if (result.length === 0) {
           res.status(404).send('No such listing')
         } else {
-          console.log('getReviewsByListingId input', result.rows[0].review_id)
+          // console.log('getReviewsByListingId input', result.rows[0].review_id)
           db.getReviewsByListingId(result.rows[0].review_id, (err, reviews) => {
             if (err) {
               res.status(500).send({err: `Server oopsie ${err}`})
@@ -38,7 +38,7 @@ app.get('/api/listings/:listingId', (req, res) => {
               // let returnReviews = reviews.rows[0];
               // console.log('REVIEWS', returnReviews);
               result.rows[0].reviews = reviews.rows[0];
-              console.log('ABOUT TO SEND:', result.rows[0]);
+              // console.log('ABOUT TO SEND:', result.rows[0]);
               client.setex(req.params.listingId, 180, result.rows[0]);
               res.send(result.rows[0]);
             }
