@@ -3,7 +3,7 @@ const express = require('express');
 const path = require('path');
 const db = require('../dockerdb/db/db.js');
 const utils = require('./utils.js');
-const PORT = process.env.PORT || 80;
+const PORT = process.env.PORT || 3003;
 const redis = require('redis');
 
 const app = express();
