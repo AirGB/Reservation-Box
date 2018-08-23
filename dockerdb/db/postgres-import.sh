@@ -3,7 +3,7 @@
 dropdb --if-exists reservation
 dropuser --if-exists reservation_user
 
-createdb reservation
+createdb reservation_copy
 psql reservation < ./db/postgreschema.sql
 
 psql reservation -c "create user reservation_user;"

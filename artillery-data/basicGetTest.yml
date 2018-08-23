@@ -3,6 +3,14 @@ config:
   phases:
     - duration: 60
       arrivalRate: 10
+      name: "warming up"
+    - duration: 60
+      arrivalRate: 10
+      rampTo: 35
+      name: "ramping to 20 instances/second"
+    - duration: 120
+      arrivalRate: 35
+      name: "stress test for a minute"
   payload:
     path: "listingIdsData.csv"
     fields:
@@ -26,35 +34,35 @@ scenarios:
       - loop:
         - get:
             url: "/api/listings/{{ listingIds }}"
-        count: 30
+        count: 50
   - name: "Get dates by target date"
     weight: 15
     flow:
       - loop:
         - get:
             url: "/api/dates/{{ listingIds }}?targetDate={{ targetDate }}"
-        count: 30
+        count: 50
   - name: "Get dates for current month"
     weight: 15
     flow:
       - loop:
         - get:
             url: "/api/dates/{{ listingIds }}?month={{ targetMonth }}"
-        count: 30
+        count: 50
   - name: "Put new charge to reservation"
     weight: 2
     flow:
       - loop:
         - put:
             url: "/api/reservations/{{ reservationId }}/change_total_charge/{{ newCharge }}"
-        count: 30
+        count: 50
   - name: "Delete a reservation"
     weight: 1
     flow:
       - loop:
         - delete:
             url: "/api/reservation/{{ deleteReservation }}/remove"
-        count: 30
+        count: 50
   - name: "Post new reservation"
     weight: 5
     flow:
