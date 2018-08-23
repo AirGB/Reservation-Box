@@ -1,10 +1,11 @@
 // const mysql = require('mysql');
 const pg = require('pg');
 
-const port = process.env.RDS_PORT|| 3306;
-const host = process.env.RDS_HOSTNAME || 'localhost';
+// const port = process.env.RDS_PORT|| 3306;
+// const host = process.env.RDS_HOSTNAME || 'localhost';
 
 const connectionStr = "postgres://ec2-52-11-72-25.us-west-2.compute.amazonaws.com:5432/reservation";
+// const connectionStr = "postgres://localhost/reservation";
 
 var db = new pg.Client(connectionStr);
 db.connect();
