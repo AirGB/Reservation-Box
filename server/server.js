@@ -1,13 +1,14 @@
 require('newrelic');
 const express = require('express');
 const path = require('path');
-const db = require('../db/db.js');
+const db = require('../dockerdb/db/db.js');
 const utils = require('./utils.js');
 const PORT = process.env.PORT || 3003;
 const redis = require('redis');
 
 const app = express();
-const client = redis.createClient();
+const client = redis.createClient(6379, '54.185.59.221');
+// port open on ec2 instance, ec2 istance ip address
 
 app.use(express.static(path.join(__dirname, '../public')));
 app.use(express.urlencoded({ extended: true }));
