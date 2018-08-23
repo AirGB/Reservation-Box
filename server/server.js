@@ -51,7 +51,7 @@ app.get('/api/listings/:listingId', (req, res) => {
 });
 
 
-app.get('/api/listings/:listingId', (req, res) => {
+app.get('/api/listings2/:listingId', (req, res) => {
   let key = req.params.listingId;
   client.get(key, (error, result) => {
     if(result) {
