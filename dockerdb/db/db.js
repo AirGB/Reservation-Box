@@ -7,7 +7,7 @@ const pg = require('pg');
 const connectionStr = "postgres://reservation_user@ec2-52-11-72-25.us-west-2.compute.amazonaws.com:5432/reservation";
 // const connectionStr = "postgres://localhost/reservation";
 
-var db = new pg.Client(connectionStr);
+var db = new pg.Pool({connectionString: connectionStr});
 db.connect();
 
 // const db = mysql.createConnection({
